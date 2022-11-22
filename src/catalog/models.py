@@ -2,6 +2,20 @@ from django.db import models
 from django.urls import reverse
 
 
+class User(models.Model):
+    ROLES = (
+        ("GST", "Guest"),
+        ("USR", "User"),
+        ("ADM", "Admin")
+    )
+
+    login = models.CharField(max_length=50)
+    email = models.EmailField()
+    name = models.CharField(max_length=50)
+    password = models.CharField(max_length=128)
+    role = models.CharField(max_length=3, choices=ROLES)
+
+
 class Author(models.Model):
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)

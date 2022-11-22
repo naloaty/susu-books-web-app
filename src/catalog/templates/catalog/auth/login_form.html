@@ -1,0 +1,47 @@
+{% load static %}
+{% load components %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>BookApp - Log in</title>
+
+    <head>
+        <link href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css"
+              rel="stylesheet">
+        <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+        <link rel="stylesheet" href="{% static 'catalog/auth/style.css' %}">
+        <link rel="stylesheet" href="{% static 'catalog/css/spacing.css' %}">
+        <link rel="stylesheet" href="{% static 'catalog/css/layout.css' %}">
+    </head>
+</head>
+<body>
+
+<div class="centered-content">
+    <form action="{% url 'login' %}" method="post" class="mdc-card mdc-card--outlined auth-card material-br">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        <div class="md-br--24"></div>
+        <h1 class="form-headline mdc-typography--headline5">Авторизация</h1>
+        <div class="md-br--16"></div>
+        {% input_text_field field=form.login %}
+        <div class="md-br--16"></div>
+        {% input_text_field field=form.password %}
+        <div class="md-br--24"></div>
+        {% button label="Войти" %}
+        <div class="md-br--8"></div>
+        {% button label="Регистрация" raised=False url="register" %}
+        <div class="md-br--8"></div>
+        {% button label="Войти как гость" raised=False url="books" %}
+        <div class="md-br--24"></div>
+    </form>
+</div>
+
+<script type="text/javascript">
+    window.mdc.autoInit();
+</script>
+
+</body>
+</html>

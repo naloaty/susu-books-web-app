@@ -11,5 +11,9 @@ urlpatterns = [
     path('authors/', AuthorListView.as_view(), name='authors'),
     path('authors/add/', AuthorCreateView.as_view(), name='author_add'),
     path('authors/<int:author_id>/edit/', AuthorUpdateView.as_view(), name='author_edit'),
-    path('authors/<int:author_id>/delete/', AuthorDeleteView.as_view(), name='author_delete')
+    path('authors/<int:author_id>/delete/', AuthorDeleteView.as_view(), name='author_delete'),
+
+    path('login/', login_view, name='login'),
+    path('logout/', logout_view, name='logout'),
+    path('register/', register_view, name='register')
 ]

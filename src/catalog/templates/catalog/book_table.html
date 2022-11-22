@@ -1,8 +1,14 @@
-{% extends 'catalog/base.html' %}
+{% extends 'catalog/catalog_base.html' %}
+{% load auth %}
 
 {% block title %}Список книг{% endblock %}
 
 {% block content %}
+    {% get_user_perm 'BOOKS_CREATE' as books_create_flag %}
+    {% get_user_perm 'BOOKS_READ' as books_read_flag %}
+    {% get_user_perm 'BOOKS_UPDATE' as books_update_flag %}
+    {% get_user_perm 'BOOKS_DELETE' as books_delete_flag %}
+
     <style>
         .paging-container {
             width: auto;
@@ -20,7 +26,9 @@
             <th class="mdl-data-table__cell--non-numeric">Автор</th>
             <th>Дата публикации</th>
             <th>Цена</th>
-            <th class="mdl-data-table__cell--non-numeric">Действия</th>
+            {% if books_update_flag or books_delete_flag %}
+                <th class="mdl-data-table__cell--non-numeric">Действия</th>
+            {% endif %}
         </tr>
         </thead>
         <tbody>
@@ -40,25 +48,22 @@
                 <td>{{ book.price }}</td>
                 <td class="mdl-data-table__cell--non-numeric">
                     <form action="{{ book.get_delete_url }}" method="post">
-                        <a class="mdl-button mdl-js-button mdl-button--icon"
-                           href="{{ book.get_edit_url }}">
-                            <i class="mdl-color-text--grey-600 material-icons">edit</i>
-                        </a>
                         {% csrf_token %}
-                        <button type="submit" class="mdl-button mdl-js-button mdl-button--icon">
-                            <i class="mdl-color-text--red-400 material-icons">delete</i>
-                        </button>
+                        {% if books_update_flag %}
+                            <a class="mdl-button mdl-js-button mdl-button--icon"
+                               href="{{ book.get_edit_url }}">
+                                <i class="mdl-color-text--grey-600 material-icons">edit</i>
+                            </a>
+                        {% endif %}
+                        {% if books_delete_flag %}
+                            <button type="submit" class="mdl-button mdl-js-button mdl-button--icon">
+                                <i class="mdl-color-text--red-400 material-icons">delete</i>
+                            </button>
+                        {% endif %}
                     </form>
                 </td>
             </tr>
         {% endfor %}
-        <!--tr>
-            <td colspan="5">
-                <button class="mdl-button mdl-js-button mdl-button--icon">
-                    1
-                </button>
-            </td>
-        </tr-->
         </tbody>
     </table>
 
@@ -68,8 +73,10 @@
         {% endfor %}
     </div>
 
-    <a class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored"
-       id="btn-add" href="{% url 'book_add' %}">
-        <i class="material-icons">add</i>
-    </a>
+    {% if books_create_flag %}
+        <a class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored"
+           id="btn-add" href="{% url 'book_add' %}">
+            <i class="material-icons">add</i>
+        </a>
+    {% endif %}
 {% endblock %}

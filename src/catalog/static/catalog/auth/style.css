@@ -1,0 +1,28 @@
+/*:root {
+    --mdc-theme-primary: #6E85B7;
+    --mdc-theme-secondary: #feeae6;
+}*/
+
+html, body {
+    background-color: #fafafa;
+    height: 100%;
+    margin: 0;
+}
+
+.auth-card {
+    height: auto;
+    width: 348px;
+    padding-left: 24px;
+    padding-right: 24px;
+}
+
+.register-card {
+    height: auto;
+    width: 348px;
+    padding-left: 24px;
+    padding-right: 24px;
+}
+
+.form-headline {
+    text-align: center;
+}
