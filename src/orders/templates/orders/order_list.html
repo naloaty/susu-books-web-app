@@ -1,0 +1,71 @@
+{% extends 'catalog/catalog_base.html' %}
+
+{% block title %}Мои заказы{% endblock %}
+
+
+{% block content %}
+    <style>
+        .button-container {
+            display: flex;
+            flex-direction: row;
+        }
+
+        .order-card.mdl-card {
+            width: 512px;
+        }
+
+        .authors-container {
+            display: flex;
+            flex-direction: column;
+            padding-top: 8px;
+            padding-bottom: 8px;
+        }
+
+        .authors-container label {
+            margin-bottom: 8px;
+        }
+
+        .authors-container .error {
+            margin-top: 4px;
+        }
+
+        .total-cost {
+            margin-left: 16px;
+        }
+    </style>
+
+    {% for order in orders %}
+        <div class="order-card mdl-card mdl-shadow--2dp">
+            <div class="mdl-card__title">
+                <h2 class="mdl-card__title-text">Заказ #{{ order.id }} от {{ order.created_at|date:"d.m.Y" }}</h2>
+            </div>
+
+            <div class="mdl-card__supporting-text">
+                <ul>
+                    {% for item in order.items.all %}
+                        {% with book=item.book %}
+                            <li>
+                                «{{ book.title }}»,
+                                {% for author in book.authors.all %}
+                                    {{ author.first_name }} {{ author.last_name }}
+
+                                    {% if not forloop.last %},
+                                    {% endif %}
+                                {% endfor %}
+                                <br>
+                                {{ item.price }} x {{ item.quantity }} = {{ item.get_cost }}</li>
+                        {% endwith %}
+                    {% endfor %}
+                </ul>
+
+            </div>
+            <div class="mdl-card__actions mdl-card--border">
+                <div class="md-br--8"></div>
+                <span class="total-cost">Итого: {{ order.get_total_cost }}</span>
+                <div class="md-br--8"></div>
+            </div>
+        </div>
+        <div class="md-br--16"></div>
+    {% endfor %}
+{% endblock %}
+

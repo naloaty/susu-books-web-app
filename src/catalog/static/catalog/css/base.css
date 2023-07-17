@@ -1,0 +1,43 @@
+#btn-add {
+    position: fixed;
+    display: block;
+    right: 0;
+    bottom: 0;
+    margin-right: 40px;
+    margin-bottom: 40px;
+    z-index: 900;
+}
+
+.centered-content {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    margin-top: 32px;
+    justify-content: center;
+}
+
+.table-toolbar {
+    display: flex;
+    flex-direction: row;
+}
+
+.catalog-drawer {
+    border: none;
+}
+
+.catalog-layout .mdl-layout__header .mdl-layout__drawer-button {
+    color: rgba(0, 0, 0, 0.54);
+}
+
+.catalog-layout .catalog-nav .mdl-navigation__link {
+    color: rgba(255, 255, 255, 0.95);
+}
+
+.catalog-layout .catalog-nav .mdl-navigation__link:hover {
+    background-color: #00BCD4;
+    color: #ffffff;
+}
+
+.catalog-layout .catalog-nav .mdl-navigation__link .material-icons {
+    margin-right: 32px;
+}

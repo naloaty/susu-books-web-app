@@ -1,0 +1,105 @@
+{% extends 'catalog/catalog_base.html' %}
+{% load auth %}
+
+{% block title %}Список книг{% endblock %}
+
+{% block content %}
+    {% get_user_perm 'BOOKS_CREATE' as books_create_flag %}
+    {% get_user_perm 'BOOKS_READ' as books_read_flag %}
+    {% get_user_perm 'BOOKS_UPDATE' as books_update_flag %}
+    {% get_user_perm 'BOOKS_DELETE' as books_delete_flag %}
+    {% get_user_perm 'BOOKS_SHOP' as books_shop_flag %}
+
+    <style>
+        .paging-container {
+            width: 100%;
+            height: auto;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            margin-top: 16px;
+        }
+
+        .actions-row {
+            width: auto;
+            height: auto;
+            display: flex;
+            align-items: end;
+            flex-direction: row;
+        }
+    </style>
+
+    <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
+        <thead>
+        <tr>
+            <th class="mdl-data-table__cell--non-numeric">Название</th>
+            <th class="mdl-data-table__cell--non-numeric">Автор</th>
+            <th>Дата публикации</th>
+            <th>Цена</th>
+            {% if books_update_flag or books_delete_flag or books_shop_flag %}
+                <th class="mdl-data-table__cell--non-numeric">Действия</th>
+            {% endif %}
+        </tr>
+        </thead>
+        <tbody>
+        {% for book in books %}
+            <tr>
+                <td class="mdl-data-table__cell--non-numeric">{{ book.title }}</td>
+                <td class="mdl-data-table__cell--non-numeric">
+                    {% for author in book.authors.all %}
+                        {{ author.first_name }} {{ author.last_name }}
+
+                        {% if not forloop.last %}
+                            <br>
+                        {% endif %}
+                    {% endfor %}
+                </td>
+                <td>{{ book.release_date|date:"d.m.Y" }}</td>
+                <td>{{ book.price }}</td>
+                <td class="mdl-data-table__cell--non-numeric">
+                    <div class="actions-row">
+                        {% csrf_token %}
+                        {% if books_update_flag %}
+                            <a class="mdl-button mdl-js-button mdl-button--icon"
+                               href="{{ book.get_edit_url }}">
+                                <i class="mdl-color-text--grey-600 material-icons">edit</i>
+                            </a>
+                        {% endif %}
+                        {% if books_delete_flag %}
+                            <form action="{{ book.get_delete_url }}" method="post">
+                                {% csrf_token %}
+                                <button type="submit" class="mdl-button mdl-js-button mdl-button--icon">
+                                    <i class="mdl-color-text--red-400 material-icons">delete</i>
+                                </button>
+                            </form>
+                        {% endif %}
+                        {% if books_shop_flag %}
+                            <form action="{% url 'cart_add' book.id %}" method="post">
+                                {{ cart_book_form.quantity }}
+                                {% csrf_token %}
+                                <button type="submit" class="mdl-button mdl-js-button mdl-button--icon">
+                                    <i class="mdl-color-text--blue-600 material-icons">add_shopping_cart</i>
+                                </button>
+                            </form>
+                        {% endif %}
+                    </div>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="paging-container">
+        {% for p in page_obj.paginator.page_range %}
+            <a class="mdl-typography--caption mdl-button mdl-js-button" href="?page={{ p }}">{{ p }}</a>
+        {% endfor %}
+    </div>
+
+    {% if books_create_flag %}
+        <a class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored"
+           id="btn-add" href="{% url 'book_add' %}">
+            <i class="material-icons">add</i>
+        </a>
+    {% endif %}
+{% endblock %}

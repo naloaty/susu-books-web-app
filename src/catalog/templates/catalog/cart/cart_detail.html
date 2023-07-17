@@ -1,0 +1,92 @@
+{% extends 'catalog/catalog_base.html' %}
+{% load auth %}
+
+{% block title %}Корзина{% endblock %}
+
+{% block content %}
+    <style>
+        .cart-actions-container {
+            width: 100%;
+            height: auto;
+            display: flex;
+            justify-content: end;
+            align-items: end;
+            flex-direction: row;
+            margin-top: 32px;
+        }
+
+        .actions-row {
+            width: auto;
+            height: auto;
+            display: flex;
+            align-items: end;
+            flex-direction: row;
+        }
+    </style>
+
+    <div>
+        <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
+            <thead>
+            <tr>
+                <th class="mdl-data-table__cell--non-numeric">Название</th>
+                <th class="mdl-data-table__cell--non-numeric">Автор</th>
+                <th>Дата публикации</th>
+                <th>Цена/шт.</th>
+                <th>Кол-во</th>
+                <th>Цена</th>
+                {% if books_update_flag or books_delete_flag or books_shop_flag %}
+                    <th class="mdl-data-table__cell--non-numeric">Действия</th>
+                {% endif %}
+            </tr>
+            </thead>
+            <tbody>
+            {% for item in cart %}
+                {% with book=item.book %}
+                    <tr>
+                        <td class="mdl-data-table__cell--non-numeric">{{ book.title }}</td>
+                        <td class="mdl-data-table__cell--non-numeric">
+                            {% for author in book.authors.all %}
+                                {{ author.first_name }} {{ author.last_name }}
+
+                                {% if not forloop.last %}
+                                    <br>
+                                {% endif %}
+                            {% endfor %}
+                        </td>
+                        <td>{{ book.release_date|date:"d.m.Y" }}</td>
+                        <td>{{ item.price }}</td>
+                        <td>{{ item.quantity }}</td>
+                        <td>{{ item.total_price }}</td>
+                        <td class="mdl-data-table__cell--non-numeric">
+                            <div class="actions-row">
+                                <a href="{% url 'cart_delete' book.id %}"
+                                   class="mdl-button mdl-js-button mdl-button--icon">
+                                    <i class="mdl-color-text--red-400 material-icons">delete</i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                {% endwith %}
+            {% endfor %}
+            <tr>
+                <td class="mdl-data-table__cell--non-numeric"><b>Итого</b></td>
+                <td colspan="3"></td>
+                <td><b>{{ cart|length }}</b></td>
+                <td><b>{{ cart.get_total_price }}</b></td>
+                <td colspan="1"></td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div class="cart-actions-container">
+            <a class="mdl-button mdl-js-button" href="{% url 'books' %}">Продолжить покупки</a>
+            <div class="md-hz--8"></div>
+            <a href="{% url 'order_create' %}"
+               class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent"
+                    {% if cart|length == 0 %} disabled {% endif %}>
+                Оформить заказ
+            </a>
+            <div class="md-hz--8"></div>
+        </div>
+    </div>
+{% endblock %}

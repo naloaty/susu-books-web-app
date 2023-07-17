@@ -1,0 +1,64 @@
+{% load static %}
+{% load components %}
+{% load js %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>BookApp - Register</title>
+
+    <head>
+        <link href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css"
+              rel="stylesheet">
+        <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+        <link rel="stylesheet" href="{% static 'catalog/auth/style.css' %}">
+        <link rel="stylesheet" href="{% static 'catalog/css/spacing.css' %}">
+        <link rel="stylesheet" href="{% static 'catalog/css/layout.css' %}">
+        <script type="text/javascript">
+            const api = {
+                login: {
+                    check: "{% url 'check_login' %}"
+                }
+            }
+        </script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/latest/js.cookie.min.js"
+                integrity="sha512-iewyUmLNmAZBOOtFnG+GlGeGudYzwDjE1SX3l9SWpGUs0qJTzdeVgGFeBeU7/BIyOZdDy6DpILikEBBvixqO9Q=="
+                crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+        <script src="{% static 'catalog/auth/registration.js' %}"></script>
+    </head>
+</head>
+<body>
+
+<div class="centered-content">
+    <form action="{% url 'register' %}" method="post" class="mdc-card mdc-card--outlined register-card material-br">
+        {% csrf_token %}
+        <div class="mdc-typography--caption">
+            {{ form.non_field_errors }}
+        </div>
+        <div class="md-br--24"></div>
+        <h1 class="form-headline mdc-typography--headline5">Регистрация</h1>
+        <div class="md-br--16"></div>
+        {% input_text_field field=form.login auto_init=False %}
+        <div class="md-br--16"></div>
+        {% input_text_field field=form.email auto_init=False %}
+        <div class="md-br--16"></div>
+        {% input_text_field field=form.name auto_init=False %}
+        <div class="md-br--16"></div>
+        {% input_text_field field=form.password auto_init=False %}
+        <div class="md-br--24"></div>
+        {% button label="Зарегистрироваться" %}
+        <div class="md-br--8"></div>
+        {% button label="Назад" raised=False url="login" %}
+        <div class="md-br--24"></div>
+    </form>
+</div>
+
+<script type="text/javascript">
+    window.mdc.autoInit();
+</script>
+
+</body>
+</html>

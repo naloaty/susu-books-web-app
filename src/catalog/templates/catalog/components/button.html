@@ -1,0 +1,13 @@
+{% if href %}
+    <a href="{{ href }}" class="mdc-typography--subtitle1 mdc-button {% if raised %} mdc-button--raised {% endif %}" data-mdc-auto-init="MDCRipple" {% if id %} id="{{ id }}" {% endif %}>
+        <span class="mdc-button__ripple"></span>
+        <span class="mdc-button__focus-ring"></span>
+        <span class="mdc-button__label">{{ label }}</span>
+    </a>
+{% else %}
+    <button {% if submit %} type="submit" {% endif %} class="mdc-typography--subtitle1 mdc-button {% if raised %} mdc-button--raised {% endif %}" data-mdc-auto-init="MDCRipple" {% if id %} id="{{ id }}" {% endif %}>
+        <span class="mdc-button__ripple"></span>
+        <span class="mdc-button__focus-ring"></span>
+        <span class="mdc-button__label">{{ label }}</span>
+    </button>
+{% endif %}

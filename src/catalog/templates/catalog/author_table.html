@@ -1,0 +1,71 @@
+{% extends 'catalog/catalog_base.html' %}
+{% load auth %}
+
+{% block title %}Список авторов{% endblock %}
+
+{% block content %}
+    {% get_user_perm 'AUTHORS_CREATE' as authors_create_flag %}
+    {% get_user_perm 'AUTHORS_READ' as authors_read_flag %}
+    {% get_user_perm 'AUTHORS_UPDATE' as authors_update_flag %}
+    {% get_user_perm 'AUTHORS_DELETE' as authors_delete_flag %}
+
+    <style>
+        .paging-container {
+            width: 100%;
+            height: auto;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            margin-top: 16px;
+        }
+    </style>
+    <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
+        <thead>
+        <tr>
+            <th class="mdl-data-table__cell--non-numeric">Имя</th>
+            <th class="mdl-data-table__cell--non-numeric">Фамилия</th>
+            {% if authors_update_flag or authors_delete_flag %}
+                <th class="mdl-data-table__cell--non-numeric">Действия</th>
+            {% endif %}
+        </tr>
+        </thead>
+        <tbody>
+        {% for author in authors %}
+            <tr>
+                <td class="mdl-data-table__cell--non-numeric">{{ author.first_name }}</td>
+                <td class="mdl-data-table__cell--non-numeric">{{ author.last_name }}</td>
+                <td class="mdl-data-table__cell--non-numeric">
+                    <form action="{{ author.get_delete_url }}" method="post">
+                        {% if authors_update_flag %}
+                            <a class="mdl-button mdl-js-button mdl-button--icon"
+                               href="{{ author.get_edit_url }}">
+                                <i class="mdl-color-text--grey-600 material-icons">edit</i>
+                            </a>
+                        {% endif %}
+                        {% csrf_token %}
+                        {% if authors_delete_flag %}
+                            <button type="submit" class="mdl-button mdl-js-button mdl-button--icon">
+                                <i class="mdl-color-text--red-400 material-icons">delete</i>
+                            </button>
+                        {% endif %}
+                    </form>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="paging-container">
+        {% for p in page_obj.paginator.page_range %}
+            <a class="mdl-typography--caption mdl-button mdl-js-button" href="?page={{ p }}">{{ p }}</a>
+        {% endfor %}
+    </div>
+
+    {% if authors_create_flag %}
+        <a class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored"
+           id="btn-add" href="{% url 'author_add' %}">
+            <i class="material-icons">add</i>
+        </a>
+    {% endif %}
+{% endblock %}
