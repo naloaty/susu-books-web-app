@@ -16,6 +16,11 @@
     justify-content: center;
 }
 
+.table-toolbar {
+    display: flex;
+    flex-direction: row;
+}
+
 .catalog-drawer {
     border: none;
 }

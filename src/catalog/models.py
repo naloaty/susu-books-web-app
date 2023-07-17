@@ -4,9 +4,10 @@ from django.urls import reverse
 
 class User(models.Model):
     ROLES = (
-        ("GST", "Guest"),
-        ("USR", "User"),
-        ("ADM", "Admin")
+        ('GST', 'Guest'),
+        ('CST', 'Customer'),
+        ('USR', 'User'),
+        ('ADM', 'Admin')
     )
 
     login = models.CharField(max_length=50)
@@ -14,6 +15,10 @@ class User(models.Model):
     name = models.CharField(max_length=50)
     password = models.CharField(max_length=128)
     role = models.CharField(max_length=3, choices=ROLES)
+
+    def get_edit_url(self):
+        return reverse('profile')
+
 
 
 class Author(models.Model):

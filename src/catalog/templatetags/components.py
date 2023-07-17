@@ -6,16 +6,15 @@ from django.urls import reverse_lazy
 
 register = template.Library()
 
-
 @register.inclusion_tag('catalog/components/input_text_field.html')
-def input_text_field(field):
+def input_text_field(field, auto_init=True):
     return {
-        'field': field
+        'field': field,
+        'auto_init': auto_init
     }
 
-
 @register.inclusion_tag('catalog/components/button.html')
-def button(label, raised=True, href="", submit=False, url=""):
+def button(label, raised=True, href="", submit=False, url="", id=""):
     link = href
 
     if not href and url:
@@ -25,5 +24,6 @@ def button(label, raised=True, href="", submit=False, url=""):
         'label': label,
         'raised': raised,
         'href': link,
-        'submit': submit
+        'submit': submit,
+        'id': id
     }

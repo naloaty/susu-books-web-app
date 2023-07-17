@@ -8,14 +8,25 @@
     {% get_user_perm 'BOOKS_READ' as books_read_flag %}
     {% get_user_perm 'BOOKS_UPDATE' as books_update_flag %}
     {% get_user_perm 'BOOKS_DELETE' as books_delete_flag %}
+    {% get_user_perm 'BOOKS_SHOP' as books_shop_flag %}
 
     <style>
         .paging-container {
-            width: auto;
+            width: 100%;
             height: auto;
             display: flex;
             flex-direction: row;
+            justify-content: center;
+            align-items: center;
             margin-top: 16px;
+        }
+
+        .actions-row {
+            width: auto;
+            height: auto;
+            display: flex;
+            align-items: end;
+            flex-direction: row;
         }
     </style>
 
@@ -26,7 +37,7 @@
             <th class="mdl-data-table__cell--non-numeric">Автор</th>
             <th>Дата публикации</th>
             <th>Цена</th>
-            {% if books_update_flag or books_delete_flag %}
+            {% if books_update_flag or books_delete_flag or books_shop_flag %}
                 <th class="mdl-data-table__cell--non-numeric">Действия</th>
             {% endif %}
         </tr>
@@ -47,7 +58,7 @@
                 <td>{{ book.release_date|date:"d.m.Y" }}</td>
                 <td>{{ book.price }}</td>
                 <td class="mdl-data-table__cell--non-numeric">
-                    <form action="{{ book.get_delete_url }}" method="post">
+                    <div class="actions-row">
                         {% csrf_token %}
                         {% if books_update_flag %}
                             <a class="mdl-button mdl-js-button mdl-button--icon"
@@ -56,11 +67,23 @@
                             </a>
                         {% endif %}
                         {% if books_delete_flag %}
-                            <button type="submit" class="mdl-button mdl-js-button mdl-button--icon">
-                                <i class="mdl-color-text--red-400 material-icons">delete</i>
-                            </button>
+                            <form action="{{ book.get_delete_url }}" method="post">
+                                {% csrf_token %}
+                                <button type="submit" class="mdl-button mdl-js-button mdl-button--icon">
+                                    <i class="mdl-color-text--red-400 material-icons">delete</i>
+                                </button>
+                            </form>
                         {% endif %}
-                    </form>
+                        {% if books_shop_flag %}
+                            <form action="{% url 'cart_add' book.id %}" method="post">
+                                {{ cart_book_form.quantity }}
+                                {% csrf_token %}
+                                <button type="submit" class="mdl-button mdl-js-button mdl-button--icon">
+                                    <i class="mdl-color-text--blue-600 material-icons">add_shopping_cart</i>
+                                </button>
+                            </form>
+                        {% endif %}
+                    </div>
                 </td>
             </tr>
         {% endfor %}

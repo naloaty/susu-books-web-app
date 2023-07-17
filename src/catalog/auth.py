@@ -3,6 +3,7 @@ from django.http import HttpResponseRedirect
 
 
 class Authorization:
+
     def __init__(self):
         self.user = None
         self.role = None
@@ -48,14 +49,14 @@ class AuthManager:
 ROLE_GUEST = {
     'name': 'GST',
     'permission_set': [
-        'BOOKS_READ',
-        'AUTHORS_READ'
+        'BOOKS_READ'
     ]
 }
 
 ROLE_USER = {
     'name': 'USR',
     'permission_set': [
+        'PROFILE',
         'BOOKS_READ',
         'BOOKS_CREATE',
         'AUTHORS_READ',
@@ -63,9 +64,19 @@ ROLE_USER = {
     ]
 }
 
+ROLE_CUSTOMER = {
+    'name': 'CST',
+    'permission_set': [
+        'PROFILE',
+        'BOOKS_READ',
+        'BOOKS_SHOP'
+    ]
+}
+
 ROLE_ADMIN = {
     'name': 'ADM',
     'permission_set': [
+        'PROFILE',
         'BOOKS_READ',
         'BOOKS_CREATE',
         'BOOKS_UPDATE',
@@ -81,25 +92,38 @@ auth_mgr = AuthManager()
 auth_mgr.register_role(**ROLE_GUEST, default=True)
 auth_mgr.register_role(**ROLE_USER)
 auth_mgr.register_role(**ROLE_ADMIN)
+auth_mgr.register_role(**ROLE_CUSTOMER)
 
 
 class AuthMixin:
     required_perms = []
     forbidden_url = ''
 
+    def __init__(self):
+        self.auth = None
+
+    def authorize(self):
+        if not self.auth:
+            self.auth = auth_mgr.authorize(self.request.session)
+
     def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
-        context['auth'] = auth_mgr.authorize(self.request.session)
+        self.authorize()
+        get_context_data = getattr(super(), "get_context_data", None)
+
+        if callable(get_context_data):
+            context = get_context_data(*args, **kwargs)
+        else:
+            context = {}
+
+        context['auth'] = self.auth
         return context
 
     def dispatch(self, request, *args, **kwargs):
+        self.authorize()
         default_response = super().dispatch(request, *args, **kwargs)
 
-        context = self.get_context_data(**kwargs)
-        auth = context['auth']
-
         for perm in self.required_perms:
-            if not auth.check(perm):
+            if not self.auth.check(perm):
                 return HttpResponseRedirect(self.forbidden_url)
 
         return default_response

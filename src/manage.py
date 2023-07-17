@@ -3,6 +3,12 @@
 import os
 import sys
 
+DEBUG = os.getenv('CATALOG_DEBUG', default=True)
+
+if DEBUG:
+    from dotenv import load_dotenv
+    load_dotenv('../catalog.env')
+
 
 def main():
     """Run administrative tasks."""

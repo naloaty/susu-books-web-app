@@ -1,13 +1,19 @@
-<label class="mdc-text-field mdc-text-field--outlined" data-mdc-auto-init="MDCTextField">
-    <span class="mdc-notched-outline">
-    <span class="mdc-notched-outline__leading"></span>
-        <span class="mdc-notched-outline__notch">
-            <span class="mdc-floating-label" id="{{ field.id_for_label }}">{{ field.label }}</span>
+<div style="display: flex; flex-direction: column;">
+    <label class="mdc-text-field mdc-text-field--outlined"
+            {% if auto_init %} data-mdc-auto-init="MDCTextField" {% endif %} >
+        <span class="mdc-notched-outline">
+            <span class="mdc-notched-outline__leading"></span>
+            <span class="mdc-notched-outline__notch">
+                <span class="mdc-floating-label" id="{{ field.id_for_label }}-label">{{ field.label }}</span>
+            </span>
+            <span class="mdc-notched-outline__trailing"></span>
         </span>
-        <span class="mdc-notched-outline__trailing"></span>
+        {{ field }}
+    </label>
+    <span>
+        <span class="mdc-typography--caption" id="{{ field.id_for_label }}-error"></span>
+        {% for error in field.errors.as_data %}
+            {{ error.message }}
+        {% endfor %}
     </span>
-    {{ field }}
-</label>
-{% for error in field.errors.as_data %}
-    {{ error.message }}
-{% endfor %}
+</div>

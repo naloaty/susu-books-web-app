@@ -15,5 +15,11 @@ urlpatterns = [
 
     path('login/', login_view, name='login'),
     path('logout/', logout_view, name='logout'),
-    path('register/', register_view, name='register')
+    path('register/', register_view, name='register'),
+    path('register/check_login', check_login_view, name='check_login'),
+    path('profile/', ProfileView.as_view(), name='profile'),
+
+    path('cart/', CartDetailView.as_view(), name='cart_detail'),
+    path('cart/add/<int:book_id>', CartAddView.as_view(), name='cart_add'),
+    path('cart/delete/<int:book_id>', CartDeleteView.as_view(), name='cart_delete'),
 ]
